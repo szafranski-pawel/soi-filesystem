@@ -1,4 +1,6 @@
-https://stackoverflow.com/questions/18015069/fwrite-and-fread-for-vector-return-segmentation-fault
+1. https://www.geeksforgeeks.org/readwrite-class-objects-fromto-file-c/
+
+2. https://stackoverflow.com/questions/18015069/fwrite-and-fread-for-vector-return-segmentation-fault
 With C++ there are simpler ways of doing this, if you learn to use the C++ I/O stream library and some nice standard algorithms and use iterators.
 
 To write a vector to a file:
