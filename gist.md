@@ -45,3 +45,7 @@ If you don't have the C++11 range-based for loop (used in the writing example ab
     std::vector<long long int>::const_iterator i;
     for (i = c.begin(); i != c.end(); ++i)
         os.write(reinterpret_cast<const char*>(&(*i)), sizeof(*i));
+
+3. https://gitlab.com/nd-cse-30341-fa17/cse-30341-fa17-project06/blob/master/include/sfs/disk.h
+
+4. https://gitlab.com/nd-cse-30341-fa17/cse-30341-fa17-project06/blob/master/include/sfs/fs.h
