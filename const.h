@@ -1,0 +1,3 @@
+#define NR_INODES 64
+#define BLOCKSIZE 4096
+#define DATABLOCKSIZE 4092
