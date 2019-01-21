@@ -1,4 +1,3 @@
-#include "bitmap.h"
 #include "file.h"
 #include <stdio.h>
 #include <stdlib.h>
