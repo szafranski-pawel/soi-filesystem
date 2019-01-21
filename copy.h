@@ -1,3 +1,5 @@
+#ifndef COPY_H
+#define COPY_H
 #include "file.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -10,7 +12,7 @@ bool copyFileToDisk(char *fileName, char *diskName)
         struct iNode iNodeTemp;
         struct superBlock superBlockTemp;
         printf("Copying file '%s' to virtual disk\n", fileName);
-        if((virtualDisk = fopen(diskName, "r+b")) == NULL)
+        if((virtualDisk = fopen(diskName, "r+")) == NULL)
         {
                 printf("Cannot open virtual disk\n");
                 return false;
@@ -34,6 +36,7 @@ bool copyFileToDisk(char *fileName, char *diskName)
                 printf("Not enough space on virtual disk\n");
                 return false;
         }
+        printf("Wystarczajaco pamieci jest\n");
         char *dataBitmap = malloc(sizeof(char)*superBlockTemp.dataBlocks);
         readDataBitmap(dataBitmap, virtualDisk, superBlockTemp.dataBlocks);
         iNodeTemp.firstBlock = findFreeBlock(dataBitmap, superBlockTemp.dataBlocks);
@@ -49,10 +52,13 @@ bool copyFileToDisk(char *fileName, char *diskName)
         setINodeBitmap(&iNodeBitmapTemp, virtualDisk, freeINodeNumber, 1);
         saveDataToVirtualDisk(virtualDisk, sourceFile, dataBitmap, &superBlockTemp, iNodeTemp);
         superBlockTemp.fileCounter++;
+        printf("przed saveSuperBlock\n");
         saveSuperBlock(&superBlockTemp, virtualDisk);
-        fclose(virtualDisk);
-        fclose(sourceFile);
-        free(dataBitmap);
+        printf("Przed zamknieciem plikow");
+        //fclose(virtualDisk);
+        //fclose(sourceFile);
+        printf("Przed zwolnieniem pamieci\n");
+        //free(dataBitmap);
         return true;
 }
 
@@ -81,3 +87,4 @@ bool copyFileFromDisk(char *fileName, char *diskName)
         fclose(virtualDisk);
         return true;
 }
+#endif

@@ -1,3 +1,5 @@
+#ifndef INODE_H
+#define INODE_H
 #include "const.h"
 #include <stdbool.h> // bool library
 #include <stdio.h>
@@ -18,6 +20,7 @@ bool checkFileName(char *fileName, FILE *virtualDisk, int diskSize)
         for(int it = 0; it < NR_INODES; it++)
         {
                 fread(&iNodeTemp, sizeof(iNodeTemp), 1, virtualDisk);
+                //printf("%s\n", iNodeTemp.fileName);
                 if(strcmp(fileName, iNodeTemp.fileName) == true)
                         return true;
         }
@@ -28,6 +31,7 @@ void saveINode(struct iNode iNodeTemp, FILE *virtualDisk, int freeINodeNumber, i
 {
         fseek(virtualDisk, BLOCKSIZE + BLOCKSIZE + ceil(ceil(diskSize/BLOCKSIZE)/BLOCKSIZE) * BLOCKSIZE + freeINodeNumber*sizeof(iNodeTemp), SEEK_SET);
         fwrite(&iNodeTemp, sizeof(iNodeTemp), 1, virtualDisk);
+        printf("saveINode zakonczone\n");
 }
 
 struct iNode readINode(char *fileName, FILE *virtualDisk, int diskSize)
@@ -41,3 +45,5 @@ struct iNode readINode(char *fileName, FILE *virtualDisk, int diskSize)
                         return iNodeTemp;
         }
 }
+
+#endif

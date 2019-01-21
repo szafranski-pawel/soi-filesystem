@@ -1,3 +1,5 @@
+#ifndef BITMAP_H
+#define BITMAP_H
 #include "const.h"
 #include <stdbool.h> // bool library
 #include <stdio.h>
@@ -11,6 +13,7 @@ void readDataBitmap(char *pointerToBuffer, FILE *virtualDisk, int dataBlockNumbe
 {
         fseek(virtualDisk, 2*BLOCKSIZE, SEEK_SET);
         fread(pointerToBuffer, sizeof(char), dataBlockNumber, virtualDisk);
+        printf("readDataBitmap zakonczone\n");
 }
 
 int findFreeBlock(char *pointerToBuffer, int dataBlockNumber)
@@ -27,6 +30,7 @@ void readINodeBitmap(struct iNodeBitmap *pointerToBitmap, FILE *virtualDisk)
 {
         fseek(virtualDisk, BLOCKSIZE, SEEK_SET);
         fread(pointerToBitmap, sizeof(struct iNodeBitmap), 1, virtualDisk);
+        printf("readINodeBitmap zakonczone\n");
 }
 
 int findFreeINode(struct iNodeBitmap *pointerToBitmap)
@@ -44,6 +48,7 @@ void setINodeBitmap(struct iNodeBitmap *pointerToBitmap, FILE *virtualDisk, int 
         (*pointerToBitmap).isNodeFree[freeINodeNumber] = sign;
         fseek(virtualDisk, BLOCKSIZE, SEEK_SET);
         fwrite(pointerToBitmap, sizeof(struct iNodeBitmap), 1, virtualDisk);
+        printf("setINodeBitmap zakonczone\n");
 }
 
 void setDataBlockBitmap(char *dataBitmap, FILE *virtualDisk, int dataBlockPosition, char sign, int dataBlockNumber)
@@ -51,4 +56,7 @@ void setDataBlockBitmap(char *dataBitmap, FILE *virtualDisk, int dataBlockPositi
         dataBitmap[dataBlockPosition] = sign;
         fseek(virtualDisk, 2*BLOCKSIZE, SEEK_SET);
         fwrite(dataBitmap, sizeof(char), dataBlockNumber, virtualDisk);
+        printf("setDataBlockBitmap zakonczone\n");
 }
+
+#endif

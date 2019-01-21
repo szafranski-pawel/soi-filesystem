@@ -1,3 +1,6 @@
+#ifndef CREATE_H
+#define CREATE_H
+
 #include "file.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -40,3 +43,5 @@ bool create(int size, char *diskName)
         fclose(virtualDisk);
         return true;
 }
+
+#endif

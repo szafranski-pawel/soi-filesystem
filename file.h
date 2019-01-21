@@ -1,3 +1,6 @@
+#ifndef FILE_H
+#define FILE_H
+
 #include "const.h"
 #include "superblock.h"
 #include "inode.h"
@@ -25,6 +28,8 @@ void saveDataToVirtualDisk(FILE *virtualDisk, FILE *sourceFile, char *dataBitmap
                 setDataBlockBitmap(dataBitmap, virtualDisk, iNodeTemp.firstBlock, 1, ((*superBlockTemp).freeDataBlocks + (*superBlockTemp).dataBlocks));
                 (*superBlockTemp).dataBlocks++;
                 (*superBlockTemp).freeDataBlocks--;
+                printf("saveDataToVirtualDisk zakonczone\n");
+
                 return;
         }
         fseek(virtualDisk, BLOCKSIZE + BLOCKSIZE + ceil(ceil((*superBlockTemp).diskSize/BLOCKSIZE)/BLOCKSIZE) * BLOCKSIZE + NR_INODES*sizeof(iNodeTemp) + iNodeTemp.firstBlock * sizeof(dataBlockTemp), SEEK_SET);
@@ -59,6 +64,7 @@ void saveDataToVirtualDisk(FILE *virtualDisk, FILE *sourceFile, char *dataBitmap
         setDataBlockBitmap(dataBitmap, virtualDisk, nextFreeBlock, 1, ((*superBlockTemp).freeDataBlocks + (*superBlockTemp).dataBlocks));
         (*superBlockTemp).dataBlocks++;
         (*superBlockTemp).freeDataBlocks--;
+        printf("saveDataToVirtualDisk zakonczone\n");
         return;
 }
 
@@ -97,5 +103,7 @@ void readDataFromVirtualDisk(FILE *virtualDisk, FILE *outputFile, struct superBl
         fseek(outputFile, 0, SEEK_SET);
         fread(&dataBlockTemp, sizeof(dataBlockTemp), 1, virtualDisk);
         fwrite(&dataBlockTemp.data, sizeof(char), iNodeTemp.fileSize, outputFile);
+        printf("readDataFromVirtualDisk zakonczone\n");
         return;
 }
+#endif
