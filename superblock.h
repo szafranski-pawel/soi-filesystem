@@ -1,4 +1,6 @@
 #include "const.h"
+#include <stdlib.h>
+#include <stdio.h>
 
 struct superBlock
 {
@@ -7,3 +9,11 @@ struct superBlock
         int dataBlocks;
         int freeDataBlocks;
 };
+
+struct superBlock readSuperBlock(FILE *virtualDisk)
+{
+        fseek(virtualDisk, 0, SEEK_SET);
+        struct superBlock superBlockTemp;
+        fread(&superBlockTemp, sizeof(superBlockTemp), 1, virtualDisk);
+        return superBlockTemp;
+}
