@@ -17,3 +17,9 @@ struct superBlock readSuperBlock(FILE *virtualDisk)
         fread(&superBlockTemp, sizeof(superBlockTemp), 1, virtualDisk);
         return superBlockTemp;
 }
+
+void saveSuperBlock(struct superBlock *superBlockTemp, FILE *virtualDisk)
+{
+        fseek(virtualDisk, 0, SEEK_SET);
+        fread(superBlockTemp, sizeof(superBlockTemp), 1, virtualDisk);
+}

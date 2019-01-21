@@ -4,7 +4,7 @@
 #include <string.h>
 #include <math.h>
 
-bool moveFileToDisk(char *fileName, char *diskName)
+bool copyFileToDisk(char *fileName, char *diskName)
 {
         FILE *virtualDisk, *sourceFile;
         struct iNode iNodeTemp;
@@ -42,13 +42,42 @@ bool moveFileToDisk(char *fileName, char *diskName)
         int freeINodeNumber = findFreeINode(&iNodeBitmapTemp);
         if(checkFileName(fileName, virtualDisk, superBlockTemp.diskSize) != false)
         {
-                printf("File '%s' already exists on virtual drive\n", fileName);
+                printf("File '%s' already exists on virtual disk\n", fileName);
                 return false;
         }
         saveINode(iNodeTemp, virtualDisk, freeINodeNumber, superBlockTemp.diskSize);
         setINodeBitmap(&iNodeBitmapTemp, virtualDisk, freeINodeNumber, 1);
         saveDataToVirtualDisk(virtualDisk, sourceFile, dataBitmap, &superBlockTemp, iNodeTemp);
+        superBlockTemp.fileCounter++;
+        saveSuperBlock(&superBlockTemp, virtualDisk);
         fclose(virtualDisk);
         fclose(sourceFile);
+        free(dataBitmap);
+        return true;
+}
+
+
+bool copyFileFromDisk(char *fileName, char *diskName)
+{
+        FILE *virtualDisk, *outputFile;
+        struct iNode iNodeTemp;
+        struct superBlock superBlockTemp;
+        printf("Copying file '%s' from virtual drive\n", fileName);
+        if((virtualDisk = fopen(diskName, "r")) == NULL)
+        {
+                printf("Cannot open virtual disk\n");
+                return false;
+        }
+        superBlockTemp = readSuperBlock(virtualDisk);
+        if(checkFileName(fileName, virtualDisk, superBlockTemp.diskSize) == false)
+        {
+                printf("File '%s' doesn't exists on virtual disk\n", fileName);
+                return false;
+        }
+        iNodeTemp = readINode(fileName, virtualDisk, superBlockTemp.diskSize);
+        outputFile = fopen(fileName, "w+");
+        readDataFromVirtualDisk(virtualDisk, outputFile, &superBlockTemp, iNodeTemp);
+        fclose(outputFile);
+        fclose(virtualDisk);
         return true;
 }
