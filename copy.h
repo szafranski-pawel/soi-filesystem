@@ -1,6 +1,5 @@
 #include "bitmap.h"
-#include "inode.h"
-#include "superblock.h"
+#include "file.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -23,6 +22,11 @@ bool moveFileToDisk(char *fileName, char *diskName)
                 return false;
         }
         superBlockTemp = readSuperBlock(virtualDisk);
+        if(superBlockTemp.fileCounter + 1 > NR_INODES)
+        {
+                printf("File limit reached\n");
+                return false;
+        }
         fseek(sourceFile, 0, SEEK_END);
         strcpy(iNodeTemp.fileName, fileName);
         iNodeTemp.fileSize = ftell(sourceFile);
@@ -36,10 +40,16 @@ bool moveFileToDisk(char *fileName, char *diskName)
         iNodeTemp.firstBlock = findFreeBlock(dataBitmap, superBlockTemp.dataBlocks);
         struct iNodeBitmap iNodeBitmapTemp;
         readINodeBitmap(&iNodeBitmapTemp, virtualDisk);
-        int INodeNumber = findFreeINode(&iNodeBitmapTemp);
+        int freeINodeNumber = findFreeINode(&iNodeBitmapTemp);
         if(checkFileName(fileName, virtualDisk, superBlockTemp.diskSize) != false)
         {
                 printf("File '%s' already exists on virtual drive\n", fileName);
                 return false;
         }
+        saveINode(iNodeTemp, virtualDisk, freeINodeNumber, superBlockTemp.diskSize);
+        setINodeBitmap(&iNodeBitmapTemp, virtualDisk, freeINodeNumber, 1);
+        saveDataToVirtualDisk(virtualDisk, sourceFile, dataBitmap, &superBlockTemp, iNodeTemp);
+        fclose(virtualDisk);
+        fclose(sourceFile);
+        return true;
 }

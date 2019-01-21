@@ -1,6 +1,5 @@
 #include "bitmap.h"
-#include "inode.h"
-#include "superblock.h"
+#include "file.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
@@ -33,5 +32,12 @@ bool create(int size, char *diskName)
         fseek(virtualDisk, BLOCKSIZE, SEEK_SET);
         fwrite(&zeroChar, sizeof(zeroChar), BLOCKSIZE + ceil(ceil(size/BLOCKSIZE)/BLOCKSIZE) * BLOCKSIZE, virtualDisk);
         fwrite(&iNodeTemp, sizeof(iNodeTemp), NR_INODES, virtualDisk);
+
+        struct dataBlock dataBlockTemp;
+        for(int it = 0; it < DATABLOCKSIZE; it++)
+                dataBlockTemp.data[it] = -1;
+        dataBlockTemp.nextBlock = -1;
+        fwrite(&dataBlockTemp, sizeof(dataBlockTemp), ceil(size/BLOCKSIZE), virtualDisk);
+        fclose(virtualDisk);
         return true;
 }

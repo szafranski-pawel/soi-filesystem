@@ -38,3 +38,17 @@ int findFreeINode(struct iNodeBitmap *pointerToBitmap)
         }
         return -1;
 }
+
+void setINodeBitmap(struct iNodeBitmap *pointerToBitmap, FILE *virtualDisk, int freeINodeNumber, char sign)
+{
+        (*pointerToBitmap).isNodeFree[freeINodeNumber] = sign;
+        fseek(virtualDisk, BLOCKSIZE, SEEK_SET);
+        fwrite(pointerToBitmap, sizeof(struct iNodeBitmap), 1, virtualDisk);
+}
+
+void setDataBlockBitmap(char *dataBitmap, FILE *virtualDisk, int dataBlockPosition, char sign, int dataBlockNumber)
+{
+        dataBitmap[dataBlockPosition] = sign;
+        fseek(virtualDisk, 2*BLOCKSIZE, SEEK_SET);
+        fwrite(dataBitmap, sizeof(char), dataBlockNumber, virtualDisk);
+}
